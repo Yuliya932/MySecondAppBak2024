@@ -14,6 +14,7 @@ import ru.maslova.MySecondAppBak2024.exception.UnsupportedCodeException;
 import ru.maslova.MySecondAppBak2024.exception.ValidationFailedException;
 import ru.maslova.MySecondAppBak2024.model.*;
 
+import ru.maslova.MySecondAppBak2024.service.ModifyRequestService;
 import ru.maslova.MySecondAppBak2024.service.ModifyResponseService;
 import ru.maslova.MySecondAppBak2024.service.ValidationService;
 import ru.maslova.MySecondAppBak2024.util.DateTimeUtil;
@@ -26,9 +27,17 @@ public class MyController {
 
     private final ValidationService validationService;
 
+    private final ModifyResponseService modifyResponseService;
+
+    private final ModifyRequestService modifyRequestService;
+
     @Autowired
-    public MyController(ValidationService validationService) {
+    public MyController(ValidationService validationService,
+                        @Qualifier("ModifySystemTimeResponseService") ModifyResponseService modifyResponseService,
+                        ModifyRequestService modifyRequestService) {
         this.validationService = validationService;
+        this.modifyResponseService = modifyResponseService;
+        this.modifyRequestService = modifyRequestService;
     }
 
     @PostMapping(value = "/feedback")
@@ -81,6 +90,8 @@ public class MyController {
                 log.error("response: {}", response);
             }
         }
+        modifyRequestService.modify(request);
+        modifyResponseService.modify(response);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
