@@ -37,8 +37,6 @@ public class Request {
     private Integer templateId;
     private Integer productCode;
     private Integer smsCode;
+    private long start;
 
-//    public void setSystemName(Systems systemName) {
-//        this.systemName = systemName;
-//    }
 }

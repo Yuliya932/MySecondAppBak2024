@@ -19,6 +19,7 @@ import ru.maslova.MySecondAppBak2024.service.ModifyResponseService;
 import ru.maslova.MySecondAppBak2024.service.ValidationService;
 import ru.maslova.MySecondAppBak2024.util.DateTimeUtil;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Slf4j
@@ -44,19 +45,25 @@ public class MyController {
     public ResponseEntity<Response> feedback(@Valid @RequestBody Request request,
                                              BindingResult bindingResult) {
 
+        long start = System.currentTimeMillis();
+
+        request.setStart(start);
 
         log.info("request: {}", request);
 
         String uid = request.getUid();
+
 
         Response response = Response.builder()
                 .uid(request.getUid())
                 .operationUid(request.getOperationUid())
                 .systemName(request.getSystemName())
                 .systemTime(DateTimeUtil.getCustomFormat().format(new Date()))
+                .source(request.getSource())
                 .code(Codes.SUCCESS)
                 .errorCode(ErrorCodes.EMPTY)
                 .errorMessage(ErrorMessages.EMPTY)
+                .start(start)
                 .build();
 
         log.info("response: {}", response);
@@ -93,6 +100,7 @@ public class MyController {
         modifyRequestService.modify(request);
         modifyResponseService.modify(response);
         return new ResponseEntity<>(response, HttpStatus.OK);
+
     }
 }
 

@@ -16,6 +16,8 @@ public class ModifySystemNameRequestService implements ModifyRequestService{
     @Override
     public void modify(Request request){
         request.setSystemName(SRVC);
+        request.setSource("Service_1");
+        request.setStart(request.getStart());
 
         HttpEntity<Request> httpEntity = new HttpEntity<>(request);
 

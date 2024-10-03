@@ -11,7 +11,9 @@ public class Response {
     private String operationUid;
     private Systems systemName;
     private String systemTime;
+    private String source;
     private Codes code;
     private ErrorCodes errorCode;
     private ErrorMessages errorMessage;
+    private long start;
 }
