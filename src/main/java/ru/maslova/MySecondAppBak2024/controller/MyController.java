@@ -14,9 +14,7 @@ import ru.maslova.MySecondAppBak2024.exception.UnsupportedCodeException;
 import ru.maslova.MySecondAppBak2024.exception.ValidationFailedException;
 import ru.maslova.MySecondAppBak2024.model.*;
 
-import ru.maslova.MySecondAppBak2024.service.ModifyRequestService;
-import ru.maslova.MySecondAppBak2024.service.ModifyResponseService;
-import ru.maslova.MySecondAppBak2024.service.ValidationService;
+import ru.maslova.MySecondAppBak2024.service.*;
 import ru.maslova.MySecondAppBak2024.util.DateTimeUtil;
 
 import java.text.SimpleDateFormat;
@@ -53,6 +51,8 @@ public class MyController {
 
         String uid = request.getUid();
 
+        CalculateAnnualBonusService calculateAnnualBonusService = new CalculateAnnualBonusService();
+        CalculateQuartBonusService calculateQuartBonusService = new CalculateQuartBonusService();
 
         Response response = Response.builder()
                 .uid(request.getUid())
@@ -60,6 +60,8 @@ public class MyController {
                 .systemName(request.getSystemName())
                 .systemTime(DateTimeUtil.getCustomFormat().format(new Date()))
                 .source(request.getSource())
+                .annualBonus(calculateAnnualBonusService.calculate(Positions.valueOf(request.getPosition()), request.getSalary(), request.getBonus(), request.getWorkDays()))
+                .quartBonus(calculateQuartBonusService.calculate(Positions.valueOf(request.getPosition()), request.getSalary(), request.getBonus(), request.getWorkDaysQuartIII()))
                 .code(Codes.SUCCESS)
                 .errorCode(ErrorCodes.EMPTY)
                 .errorMessage(ErrorMessages.EMPTY)
@@ -77,14 +79,12 @@ public class MyController {
             log.error("response: {}", response);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 
-
         } catch (Exception e) {
             response.setCode(Codes.FAILED);
             response.setErrorCode(ErrorCodes.UNKNOWN_EXCEPTION);
             response.setErrorMessage(ErrorMessages.UNKNOWN);
             log.error("response: {}", response);
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-
         }
 
         if (uid.equals("123")) {
@@ -100,7 +100,6 @@ public class MyController {
         modifyRequestService.modify(request);
         modifyResponseService.modify(response);
         return new ResponseEntity<>(response, HttpStatus.OK);
-
     }
 }
 
